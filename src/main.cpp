@@ -17,7 +17,7 @@ uint8_t smallsendbuff[64];//60+2 for packet counter and +2 for crc
 uint16_t register_contents = 0;
 uint32_t counter=0;
 uint32_t bigcounter=0;
-uint32_t o,p =0;
+uint32_t o,p,x =0;
 
 
 void hw_wdt_disable(){
@@ -34,8 +34,9 @@ void ICACHE_RAM_ATTR ISR() {
 void setup() {
   pinMode(D8, OUTPUT);
   digitalWrite(D8, LOW);
-  delay(10);
+  delay(100);
   digitalWrite(D8, HIGH);
+  delay(100);
   pinMode(D2, INPUT); //dataready
   hw_wdt_disable();
   ESP.wdtDisable();
@@ -49,9 +50,9 @@ void setup() {
   Serial.begin(115200);
 
   adc.begin(14, 12, 13, 5);// cs, dataready
-  adc.setOsr(2);
-  adc.setInputChannelSelection(0, INPUT_CHANNEL_MUX_AIN0P_AIN0N);
-  adc.setInputChannelSelection(1, INPUT_CHANNEL_MUX_AIN0P_AIN0N);
+  adc.setOsr(1);
+  //adc.setInputChannelSelection(0, INPUT_CHANNEL_MUX_AIN0P_AIN0N);
+  //adc.setInputChannelSelection(1, INPUT_CHANNEL_MUX_AIN0P_AIN0N);
   attachInterrupt(digitalPinToInterrupt(D2), ISR, FALLING);
   }
 
@@ -91,10 +92,13 @@ void loop() {
       }
       counter= 0;
       bigcounter=0;
-      register_contents = adc.readRegister(0x01);
-      registerbytes[1] = register_contents & 255;//0xFF
-      registerbytes[0] = (register_contents >> 8) & 255;
-      Serial.write(registerbytes,sizeof(registerbytes));
+      for(x=0;x<4;++x) {
+          register_contents = adc.readRegister(x);
+          registerbytes[1] = register_contents & 255;//0xFF
+          registerbytes[0] = (register_contents >> 8) & 255;
+          Serial.write(registerbytes, sizeof(registerbytes));
+      }
+
       attachInterrupt(digitalPinToInterrupt(D2), ISR, FALLING);
     }
   }

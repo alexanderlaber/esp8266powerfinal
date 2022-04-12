@@ -33,11 +33,11 @@ uint8_t ADS131M04::writeRegister(uint8_t address, uint16_t value)
   SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
-  SPI.transfer16(0x0000);
+  /*SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
   SPI.transfer16(0x0000);
-  SPI.transfer(0x00);
+  SPI.transfer(0x00);*/
 
   res = SPI.transfer16(0x0000);
   SPI.transfer(0x00);
@@ -51,11 +51,11 @@ uint8_t ADS131M04::writeRegister(uint8_t address, uint16_t value)
   SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
-  SPI.transfer16(0x0000);
+  /*SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
   SPI.transfer16(0x0000);
-  SPI.transfer(0x00);
+  SPI.transfer(0x00);*/
 
   delayMicroseconds(1);
   digitalWrite(ADS131M04_CS_PIN, HIGH);
@@ -91,10 +91,15 @@ void ADS131M04::writeRegisterMasked(uint8_t address, uint16_t value, uint16_t ma
 
 uint16_t ADS131M04::readRegister(uint8_t address)
 {
+    /*     id: 00100010 xxxxxxxx
+     * status: 00000101 000000xx(dataready)
+     *   mode: 00000101 00010000
+     *  clock: 00000011 00001110
+     */
   uint16_t cmd;
   uint16_t data;
 
-  cmd = CMD_READ_REG | (address << 7 | 0);
+  cmd = CMD_READ_REG | (address << 7 | 0); //1010
 
   digitalWrite(ADS131M04_CS_PIN, LOW);
   delayMicroseconds(1);
@@ -112,12 +117,13 @@ uint16_t ADS131M04::readRegister(uint8_t address)
   SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
-  SPI.transfer16(0x0000);
+  /*SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
   SPI.transfer16(0x0000);
-  SPI.transfer(0x00);
+  SPI.transfer(0x00);*/
 
+  //SPI.transfer16(0x0000);
   data = SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
@@ -130,11 +136,11 @@ uint16_t ADS131M04::readRegister(uint8_t address)
   SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
-  SPI.transfer16(0x0000);
+  /*SPI.transfer16(0x0000);
   SPI.transfer(0x00);
 
   SPI.transfer16(0x0000);
-  SPI.transfer(0x00);
+  SPI.transfer(0x00);*/
 
   delayMicroseconds(1);
   digitalWrite(ADS131M04_CS_PIN, HIGH);
