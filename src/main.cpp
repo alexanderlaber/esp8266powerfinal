@@ -15,11 +15,22 @@ uint8_t registerbytes[2];
 uint8_t buff[12000]; //numberofsamples*6 12000
 uint8_t smallsendbuff[64];//60+2 for packet counter and +2 for crc
 uint16_t register_contents = 0;
+uint16_t crc_topython = 0;
 uint32_t counter=0;
 uint32_t bigcounter=0;
 uint32_t o,p,x =0;
 
-
+uint16_t crc16manual(uint8_t* pData, int length)
+{
+    uint8_t i;
+    uint16_t wCrc = 0xffff;
+    while (length--) {
+        wCrc ^= *(uint8_t *)pData++ << 8;
+        for (i=0; i < 8; i++)
+            wCrc = wCrc & 0x8000 ? (wCrc << 1) ^ 0x1021 : wCrc << 1;
+    }
+    return wCrc & 0xffff;
+}
 void hw_wdt_disable(){
     *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
 }
@@ -60,12 +71,12 @@ void loop() {
   if (readflag){
     readflag=0;
     res = adc.readADC();
-    buff[counter*6] = res.ch0x;
-    buff[(counter*6) +1] = res.ch0x2;
-    buff[(counter*6) +2] = res.ch0x3;
-    buff[(counter*6) +3] = res.ch1x;
-    buff[(counter*6) +4] = res.ch1x2;
-    buff[(counter*6) +5] = res.ch1x3;
+    buff[counter*6] = res.ch0x;//res.ch0x
+    buff[(counter*6) +1] = res.ch0x2;;//res.ch0x2;
+    buff[(counter*6) +2] = res.ch0x3;;//res.ch0x3;
+    buff[(counter*6) +3] = res.ch1x;;//res.ch1x;
+    buff[(counter*6) +4] = res.ch1x2;;//
+    buff[(counter*6) +5] = res.ch1x3;;//
     counter+=1;
     if (counter==sizeof(buff)/6){
         detachInterrupt(digitalPinToInterrupt(D2));
@@ -80,13 +91,13 @@ void loop() {
         for (p=0;p<60;++p){
            smallsendbuff[p] = buff[(o*60) +p];
         }
-        crc.reset();
-        crc.setPolynome(0x8408);
-        crc.add((uint8_t*)smallsendbuff, 62);
+        //crc.reset();
+        //crc.setPolynome(0x1021);
         smallsendbuff[60] = bigcounter & 255;
         smallsendbuff[61] = (bigcounter >> 8) & 255;
-        smallsendbuff[62] = crc.getCRC() & 255;
-        smallsendbuff[63] = (crc.getCRC() >> 8) & 255;//crc.getCRC()
+        crc_topython =crc16manual((uint8_t*)smallsendbuff, 62);
+        smallsendbuff[62] = crc_topython & 255;
+        smallsendbuff[63] = (crc_topython >> 8) & 255;//crc.getCRC()
         Serial.write(smallsendbuff,sizeof(smallsendbuff));
         bigcounter++;
       }

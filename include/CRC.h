@@ -135,7 +135,7 @@ uint16_t crc12(const uint8_t *array, uint16_t length, const uint16_t polynome = 
 
 
 // CRC POLYNOME = x15 + 1 =  1000 0000 0000 0001 = 0x8001
-uint16_t crc16(const uint8_t *array, uint16_t length, const uint16_t polynome = 0x8001, const uint16_t startmask = 0x0000, const uint16_t endmask = 0x0000, const bool reverseIn = false, const bool reverseOut = false)
+uint16_t crc16(const uint8_t *array, uint16_t length, const uint16_t polynome = 0x1021, const uint16_t startmask = 0xFFFF, const uint16_t endmask = 0x0000, const bool reverseIn = false, const bool reverseOut = false)
 {
   uint16_t crc = startmask;
   while (length--) 

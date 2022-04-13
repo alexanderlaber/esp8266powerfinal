@@ -17,9 +17,9 @@ CRC16::CRC16()
 void CRC16::reset()
 {
   _polynome   = CRC16_DEFAULT_POLYNOME;
-  _startMask  = 0;
+  _startMask  = 0xFFFF;
   _endMask    = 0;
-  _crc        = 0;
+  _crc        = 0xFFFF;
   _reverseIn  = false;
   _reverseOut = false;
   _started    = false;
