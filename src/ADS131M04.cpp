@@ -445,13 +445,18 @@ adcOutput ADS131M04::readADC(void)
   digitalWrite(ADS131M04_CS_PIN, LOW);
   delayMicroseconds(1);
 
-  x = SPI.transfer(0x00);
-  x2 = SPI.transfer(0x00);
-  SPI.transfer(0x00);
+  x = SPI.transfer(0x00);//status
+  x2 = SPI.transfer(0x00);//status
+  x3= SPI.transfer(0x00);//
 
   res.status = ((x << 8) | x2);
+  res.status0=x;
+  res.status1=x2;
+  res.status2=x3;
 
-  x = SPI.transfer(0x00);
+
+
+    x = SPI.transfer(0x00);
   x2 = SPI.transfer(0x00);
   x3 = SPI.transfer(0x00);
 
@@ -513,9 +518,11 @@ adcOutput ADS131M04::readADC(void)
   {
     res.ch3 = aux;
   }*/
+  x=SPI.transfer(0x00);
+  x2=SPI.transfer(0x00);
   SPI.transfer(0x00);
-  SPI.transfer(0x00);
-  SPI.transfer(0x00);
+  res.crc0=x;
+  res.crc1=x2;
 
   delayMicroseconds(1);
   digitalWrite(ADS131M04_CS_PIN, HIGH);

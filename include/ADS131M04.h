@@ -6,16 +6,26 @@
 struct adcOutput
 {
   uint16_t status;
-  int32_t ch0;
+  uint8_t status0;
+  uint8_t status1;
+    uint8_t status2;
+
+    int32_t ch0;
   int32_t ch1;
   int32_t ch2;
   int32_t ch3;
   uint8_t ch0x;
   uint8_t ch0x2;
   uint8_t ch0x3;
-   uint8_t ch1x;
+  uint8_t ch1x;
   uint8_t ch1x2;
   uint8_t ch1x3;
+  uint8_t crc0;
+  uint8_t crc1;
+  uint8_t crc2;
+
+
+
 };
 
 #define DRDY_STATE_LOGIC_HIGH 0 // DEFAULS
